@@ -5,15 +5,14 @@ export default createStore({
   state: {
     currencyRUB: 75,
   },
-  getters: {
-  },
+  getters: {},
   actions: {
-    newCurrency(all, data){
-      all.state.currencyRUB=Number(data)
+    newCurrency(all, data) {
+      all.state.currencyRUB = Number(data);
     }
   },
   modules: {
-    product:productModule,
-    cart:cartModule,
+    product: productModule,
+    cart: cartModule,
   }
 })

@@ -3,7 +3,8 @@
         <div class="curreny">
             <div class="curr-txt">
                 Валюта (руб/доллар):
-                <input type="number" min="20" max="80" :value="currencyRUB" @input="changeCurrency" :class="{'increment':dcurr==1, 'default':dcurr==0, 'decrement':dcurr==-1, }">
+                <input type="number" min="20" max="80" :value="currencyRUB" @input="changeCurrency"
+                    :class="{ 'increment': dcurr == 1, 'default': dcurr == 0, 'decrement': dcurr == -1, }">
             </div>
         </div>
         <div class="category" v-for="table in names" :key="table.G">
@@ -19,7 +20,7 @@
                             {{ product.N }}
                         </div>
                         <div class="product-price">
-                            {{ product.C }}
+                            {{ (product.C* product.currency).toFixed(2)}}
                         </div>
                         <div class="add-to-cart">
                             <button @click="addToCart(product)" type="button" title="Добавить в корзину">
@@ -34,22 +35,24 @@
     </div>
 </template>
 <script setup>
-import { computed, onMounted, reactive, ref,watch } from 'vue'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useStore } from 'vuex';
 const store = useStore();
-const data = computed(() => store.state.product.data)
-const names = computed(() => store.state.product.names)
+// const data = computed(() => store.state.product.data)
+// const names = computed(() => store.state.product.names)
+const data = computed(() => store.getters['product/data'])
+const names = computed(() => store.getters['product/names'])
 const currencyRUB = computed(() => store.state.currencyRUB)
 const getData = () => store.dispatch("product/getData");
 const addToCart = (data) => store.dispatch("cart/addToCart", data)
-const newCurrency=(data)=>store.dispatch("newCurrency", data)
+const newCurrency = (data) => store.dispatch("newCurrency", data)
 const products = reactive([]);
-const dcurr=ref(0)
-const selectProducts = () => {
+const dcurr = ref(0)
+const selectProducts = (currency) => {
     for (let prop in data.value.Value.Goods) {
         let groupID = data.value.Value.Goods[prop].G
         let productId = data.value.Value.Goods[prop].T;
-        data.value.Value.Goods[prop].C *= currencyRUB.value
+        data.value.Value.Goods[prop].currency= currency
         names.value[groupID].B[productId] = { ...names.value[groupID].B[productId], ...data.value.Value.Goods[prop] }
     };
     for (let i in names.value) {
@@ -62,24 +65,20 @@ const selectProducts = () => {
         names.value[i].isProductInStock = isProductInStock
     }
 }
-watch(currencyRUB, (newVal, oldVal)=>{
-    if(newVal<oldVal){
-        dcurr.value=-1
-    }else{
-        dcurr.value=1
+watch(currencyRUB, (newVal, oldVal) => {
+    if (newVal < oldVal) {
+        dcurr.value = -1
+    } else {
+        dcurr.value = 1
     }
-    // setTimeout(()=>{
-    //     dcurr.value=0
-    // }, 300)
-    
-    console.log(dcurr.value, "dcurr", currencyRUB.value)
+    selectProducts(newVal)
 })
-const changeCurrency=(e)=>{
+const changeCurrency = (e) => {
     newCurrency(e.target.value)
 }
 onMounted(async () => {
     await getData();
-    selectProducts()
+    selectProducts(currencyRUB.value)
 })
 </script>
 <style lang="scss" scoped>
@@ -129,41 +128,49 @@ onMounted(async () => {
         }
     }
 }
-.curreny{
+
+.curreny {
     margin: 15px 0;
 }
-.curr-txt{
 
-    .default{
+.curr-txt {
 
-    }
-    .increment{
+    .default {}
+
+    .increment {
         &:focus-visible {
-            outline:red auto 2px ;
+            outline: red auto 2px;
         }
+
         border-color: red;
         background: red;
     }
-    .decrement{
+
+    .decrement {
         &:focus-visible {
-            outline:green auto 2px ;
+            outline: green auto 2px;
         }
+
         border-color: green;
-        
+
         background: green;
     }
-    input{
+
+    input {
         border: 2px solid #000;
         border-radius: 0;
-        &.decrement{
+
+        &.decrement {
             background-color: #fff;
         }
-        &.increment{
+
+        &.increment {
             background-color: #fff;
         }
     }
 
 }
+
 table {
     width: 100%;
     margin-bottom: 10px;

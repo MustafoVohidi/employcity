@@ -27,6 +27,7 @@ export const cartModule = {
                 price: data.C,
                 quantity: 1,
                 remaind:data.P,
+                currency:data.currency,
             }
             if (all.state.products.some(elem => elem.id == obj.id)) {
                 all.state.products.forEach(elem=>{

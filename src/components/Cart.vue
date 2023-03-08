@@ -36,7 +36,7 @@
                     <div class="c-price">
                         <div class="price">
                             <span>
-                                {{ product.price }} руб.
+                                {{ product.price*currencyRUB }} руб.
                             </span>/шт
                         </div>
                         <div class="delete">
@@ -66,20 +66,18 @@ import { useStore } from 'vuex';
 import { onMounted, ref, reactive, computed, watch } from "vue";
 const store = useStore();
 const productList = computed(() => store.state.cart.products);
+const currencyRUB = computed(() => store.state.currencyRUB)
 const deleteProduct = (data) => store.dispatch("cart/deleteProduct", data);
 const total = computed(() => {
     let tot = 0;
     productList.value.forEach(product => {
         tot += product.price * product.quantity
     });
-    return tot.toFixed(2)
+    return tot.toFixed(2)*currencyRUB.value
 })
 
-// const changeQuantity=(e)=>{
-//     // console.log(e.target.value)
-// }
 onMounted(() => {
-    // console.log(total.value)
+
 })
 </script>
 <style lang="scss" scoped>
