@@ -3,7 +3,7 @@
         <div class="curreny">
             <div class="curr-txt">
                 Валюта (руб/доллар):
-                <input type="number" :value="currencyRUB" @input="changeCurrency" :class="{'increment':dcurr==1, 'default':dcurr==0, 'decrement':dcurr==-1, }">
+                <input type="number" min="20" max="80" :value="currencyRUB" @input="changeCurrency" :class="{'increment':dcurr==1, 'default':dcurr==0, 'decrement':dcurr==-1, }">
             </div>
         </div>
         <div class="category" v-for="table in names" :key="table.G">
@@ -41,6 +41,8 @@ const data = computed(() => store.state.product.data)
 const names = computed(() => store.state.product.names)
 const currencyRUB = computed(() => store.state.currencyRUB)
 const getData = () => store.dispatch("product/getData");
+const addToCart = (data) => store.dispatch("cart/addToCart", data)
+const newCurrency=(data)=>store.dispatch("newCurrency", data)
 const products = reactive([]);
 const dcurr=ref(0)
 const selectProducts = () => {
@@ -51,7 +53,6 @@ const selectProducts = () => {
         names.value[groupID].B[productId] = { ...names.value[groupID].B[productId], ...data.value.Value.Goods[prop] }
     };
     for (let i in names.value) {
-        // console.log(names.value[i])
         let isProductInStock = false;
         for (let j in names.value[i].B) {
             if (names.value[i].B[j].C) {
@@ -61,24 +62,24 @@ const selectProducts = () => {
         names.value[i].isProductInStock = isProductInStock
     }
 }
-const addToCart = (data) => store.dispatch("cart/addToCart", data)
-
 watch(currencyRUB, (newVal, oldVal)=>{
-    if(newVal>oldVal){
+    if(newVal<oldVal){
         dcurr.value=-1
     }else{
         dcurr.value=1
     }
+    // setTimeout(()=>{
+    //     dcurr.value=0
+    // }, 300)
     
-    console.log(dcurr.value, "dcurr")
+    console.log(dcurr.value, "dcurr", currencyRUB.value)
 })
 const changeCurrency=(e)=>{
-    console.log(e.target.value)
+    newCurrency(e.target.value)
 }
 onMounted(async () => {
     await getData();
     selectProducts()
-    console.log("names", names.value)
 })
 </script>
 <style lang="scss" scoped>
@@ -128,7 +129,41 @@ onMounted(async () => {
         }
     }
 }
+.curreny{
+    margin: 15px 0;
+}
+.curr-txt{
 
+    .default{
+
+    }
+    .increment{
+        &:focus-visible {
+            outline:red auto 2px ;
+        }
+        border-color: red;
+        background: red;
+    }
+    .decrement{
+        &:focus-visible {
+            outline:green auto 2px ;
+        }
+        border-color: green;
+        
+        background: green;
+    }
+    input{
+        border: 2px solid #000;
+        border-radius: 0;
+        &.decrement{
+            background-color: #fff;
+        }
+        &.increment{
+            background-color: #fff;
+        }
+    }
+
+}
 table {
     width: 100%;
     margin-bottom: 10px;

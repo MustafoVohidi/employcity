@@ -8,6 +8,9 @@ export default createStore({
   getters: {
   },
   actions: {
+    newCurrency(all, data){
+      all.state.currencyRUB=Number(data)
+    }
   },
   modules: {
     product:productModule,
