@@ -14,25 +14,34 @@ export const productModule = {
             return state.names
         },
     },
-    mutations: {
-        addData(state) {
-            // setTimeout(()=>{
-            //     state.data = { ...data }
-            // },2000)
-            state.data = { ...data }
-        },
-        addNames(state) {
-            // setTimeout(()=>{
-            //     state.names = { ...names }
-            // },2000)
-            state.names = { ...names }
-        },
-    },
     actions: {
+        promData(all) {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    resolve(data);
+                }, 200);
+            }).then((resolve) => {
+                setInterval(()=>{
+                    all.state.data = { ...resolve }
+                }, 15000)
+                all.state.data = { ...resolve }
+            });
+        },
+        promNames(all) {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    resolve(names);
+                }, 200);
+            }).then((resolve) => {
+                setInterval(()=>{
+                    all.state.names = { ...resolve }
+                }, 15000)
+                all.state.names = { ...resolve }
+            });
+        },
         async getData(all) {
-            await all.commit("addData")
-            await all.commit("addNames")
-            console.log("15000")
+            await all.dispatch("promNames")
+            await all.dispatch("promData")
         },
     },
     namespaced: true,

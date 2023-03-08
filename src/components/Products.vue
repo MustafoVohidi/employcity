@@ -20,7 +20,7 @@
                             {{ product.N }}
                         </div>
                         <div class="product-price">
-                            {{ (product.C* product.currency).toFixed(2)}}
+                            {{ (product.C * product.currency).toFixed(2)}}
                         </div>
                         <div class="add-to-cart">
                             <button @click="addToCart(product)" type="button" title="Добавить в корзину">
@@ -46,13 +46,12 @@ const currencyRUB = computed(() => store.state.currencyRUB)
 const getData = () => store.dispatch("product/getData");
 const addToCart = (data) => store.dispatch("cart/addToCart", data)
 const newCurrency = (data) => store.dispatch("newCurrency", data)
-const products = reactive([]);
 const dcurr = ref(0)
 const selectProducts = (currency) => {
     for (let prop in data.value.Value.Goods) {
         let groupID = data.value.Value.Goods[prop].G
         let productId = data.value.Value.Goods[prop].T;
-        data.value.Value.Goods[prop].currency= currency
+        data.value.Value.Goods[prop].currency = currency
         names.value[groupID].B[productId] = { ...names.value[groupID].B[productId], ...data.value.Value.Goods[prop] }
     };
     for (let i in names.value) {

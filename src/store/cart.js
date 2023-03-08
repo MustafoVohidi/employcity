@@ -1,17 +1,7 @@
 export const cartModule = {
     state: () => ({
         products: [],
-        // total: 0,
     }),
-    getters: {
-        // totalPrice(state) {
-        //     state.total = 0;
-        //     state.products.forEach(product => {
-        //         state.total += product.price*product.quantity
-        //     });
-        //     return state.total
-        // },
-    },
     actions: {
         deleteProduct(all, data) {
             all.state.products.splice(data, 1)

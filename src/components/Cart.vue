@@ -26,7 +26,7 @@
                     </div>
                     <div class="c-qty">
                         <div class="qty">
-                            <input type="number" min="0" :max="product.remaind" v-model="product.quantity" />
+                            <input type="number" min="1" :max="product.remaind" v-model="product.quantity" />
                             <span>шт.</span>
                         </div>
                         <div class="warning" v-if="product.remaind <= 5">
@@ -36,7 +36,7 @@
                     <div class="c-price">
                         <div class="price">
                             <span>
-                                {{ product.price*currencyRUB }} руб.
+                                {{ (product.price*currencyRUB).toFixed(2) }} руб.
                             </span>/шт
                         </div>
                         <div class="delete">
@@ -55,7 +55,7 @@
             </div>
             <div class="cart-foot">
                 <div class="total">
-                    Общая стоимость: <span class="price">{{ total }} .руб</span>
+                    Общая стоимость: <span class="price">{{ total.toFixed(2) }} .руб</span>
                 </div>
             </div>
         </div>
@@ -63,7 +63,7 @@
 </template>
 <script setup>
 import { useStore } from 'vuex';
-import { onMounted, ref, reactive, computed, watch } from "vue";
+import { onMounted, computed } from "vue";
 const store = useStore();
 const productList = computed(() => store.state.cart.products);
 const currencyRUB = computed(() => store.state.currencyRUB)
